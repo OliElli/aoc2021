@@ -1,55 +1,41 @@
 #!/usr/bin/env python3
 
-file = 'test_input.txt'
-bits = {}
-gamma = []
-epsilon = []
-gamma_value = 0
-epsilon_value = 0
-updated_input = []
+file = 'input.txt'
 
 with open(file) as f:
     input = f.read().splitlines()
 
-for i in range(0, len(input[0])):
-    bits[i] = 0
+def more_ones(list, truth):
+    data = []
+    for i in range(0, len(list[0])):
+        more_ones = sum([1 for x in list if x[i] == '1']) >= sum([1 for x in list if x[i] == '0'])
+        if more_ones:
+            if truth:
+                data.append(1)
+            else:
+                data.append(0)
+        else:
+            if truth:
+                data.append(0)
+            else:
+                data.append(1)
+    return data
 
-for line in input:
+def search_lists(input, truth):
+    numbers = input.copy()
     for i in range(0, len(input[0])):
-        if line[i] == '1':
-            bits[i] += 1
+        count = 0
+        for line in numbers:
+            if line[i] == str(more_ones(numbers, truth)[i]):
+                count += 1
+        if count == len(numbers) / 2:
+            char = (1 if truth else 0)
+        else:
+            char = more_ones(numbers, truth)[i]
+        for line in list(numbers):
+            if line[i] != str(char):
+                numbers.remove(line)
+        if len(numbers) == 1:
+            return numbers[0]
 
-for i in range(0, len(input[0])):
-    if bits[i] / len(input) > 0.5:
-        gamma.append(1)
-        epsilon.append(0)
-    else:
-        gamma.append(0)
-        epsilon.append(1)
-
-print(input)
-print(gamma)
-
-input_line = -1
-for line in input:
-    input_line += 1
-    for i in range(0, len(input[0])):
-        print(line[i])
-        if line[i] == gamma[i]:
-            # not significant
-            input.pop(input_line)
-            continue
-    break
-
-print(input)
-
-
-
-
-# for i in range(0, len(input[0])):
-#     if gamma[i] == 1:
-#         gamma_value += 2 ** i
-#     if epsilon[i] == 1:
-#         epsilon_value += 2 ** i
-
-# print(gamma_value * epsilon_value)
+print(int(search_lists(input, True), 2) * int(search_lists(input, False), 2))

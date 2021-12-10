@@ -24,7 +24,7 @@ for i in range(0, 256):
             value_map_copy[8] = value_map[0]
         else:
             value_map_copy[key] = value_map[key + 1]
-    value_map = value_map_copy.copy()
+    value_map = value_map_copy
     count += 1
 
 print(sum(value_map.values()))
